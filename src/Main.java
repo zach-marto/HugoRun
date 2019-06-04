@@ -29,7 +29,17 @@ public class Main extends JPanel {
         timer.start();
  
         setKeyListener();
+        addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent mouseEvent) {
+                System.out.println("mouse moving");
+            }
 
+            @Override
+            public void mouseMoved(MouseEvent mouseEvent) {
+
+            }
+        });
  
     }
  
