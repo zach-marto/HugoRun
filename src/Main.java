@@ -14,6 +14,8 @@ public class Main extends JPanel {
     private Hugo hugo = new Hugo(0, 500, Sprite.NORTH);
  
     public Main() {
+        System.out.println("JIMING");
+
         keys = new boolean[512]; //should be enough to hold any key code.
 
         timer = new Timer(100, new ActionListener() {
