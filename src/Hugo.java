@@ -5,7 +5,7 @@ public class Hugo extends Sprite {
     boolean frame1 = true;
     public Hugo(int x, int y, int dir) {
         super(x, y, dir);
-        setLane(1);
+        setLane(3);
         setPic("hugo frame 1.png", Sprite.NORTH);
     }
 
@@ -41,6 +41,11 @@ public class Hugo extends Sprite {
     }
 
     public void setLane(int lane) {
+        if(lane < 1)
+            lane = 1;
+        if(lane > 5)
+            lane = 5;
+
         this.lane = lane;
 
         int x = 273*(lane-1)+98;

@@ -49,7 +49,7 @@ public class Main extends JPanel {
             keys[KeyEvent.VK_UP] = false;
         }
         if (keys[KeyEvent.VK_A] || keys[KeyEvent.VK_LEFT]) {
-
+            hugo.setLane(hugo.getLane()-1);
             keys[KeyEvent.VK_A] = false;
             keys[KeyEvent.VK_LEFT] = false;
         }
@@ -59,7 +59,7 @@ public class Main extends JPanel {
             keys[KeyEvent.VK_DOWN] = false;
         }
         if (keys[KeyEvent.VK_D] || keys[KeyEvent.VK_RIGHT]) {
-
+            hugo.setLane(hugo.getLane()+1);
             keys[KeyEvent.VK_D] = false;
             keys[KeyEvent.VK_RIGHT] = false;
         }
@@ -77,6 +77,8 @@ public class Main extends JPanel {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
                 keys[keyEvent.getKeyCode()] = true;
+                moveHugo();
+
             }
  
             //when a key is released, its boolean is switched to false.
