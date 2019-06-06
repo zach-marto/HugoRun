@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 //TODO: PUT YOUR NAME HERE
  
@@ -10,6 +11,7 @@ public class Main extends JPanel {
     public static final int FRAMEWIDTH = 1440, FRAMEHEIGHT = 850;
     private Timer timer;
     private boolean[] keys;
+    private ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
 
     private Hugo hugo = new Hugo(0, 500, Sprite.NORTH);
  
@@ -17,9 +19,20 @@ public class Main extends JPanel {
 
         keys = new boolean[512]; //should be enough to hold any key code.
 
+        for (int i = 0; i < 6; i++) {
+            obstacles.add(new Obstacle(-200, -200, Sprite.NORTH));
+            obstacles.get(i).spawn(i);
+        }
+
         timer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+
+
+                for (int i = 0; i < obstacles.size(); i++) {
+                    if(hugo.intersects(obstacles.get(i)))
+                        System.out.println("you dead stupid head");
+                }
 
                 hugo.changeFrame();
 
@@ -37,6 +50,11 @@ public class Main extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
+        for (int i = 0; i < obstacles.size(); i++) {
+            obstacles.get(i).update();
+            obstacles.get(i).draw(g2);
+        }
 
         hugo.draw(g2);
 
