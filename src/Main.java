@@ -51,10 +51,26 @@ public class Main extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+
+
+        Color color = new Color (100,57,40);
+        g2.setColor(color);
+
+        for (int i = 1; i < 6; i++) {
+
+            int constant = 273;
+            int[] x1 = {73 + (i-1)*constant, i*constant, i*constant, 73 + (i-1)*constant};
+            int[] y1 = {900,900,0,0};
+            int a1 = 4;
+            g2.fillPolygon(x1, y1, a1);
+        }
+
+
         for (int i = 0; i < obstacles.size(); i++) {
             obstacles.get(i).update();
             obstacles.get(i).draw(g2);
         }
+
 
         hugo.draw(g2);
 
