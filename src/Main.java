@@ -51,19 +51,45 @@ public class Main extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        Color background = new Color(64,32,31);
+        g2.setColor(background);
 
+        g2.fillRect(0,0,1440,900);
 
         Color color = new Color (100,57,40);
         g2.setColor(color);
 
-        for (int i = 1; i < 6; i++) {
+//        for (int i = 1; i < 6; i++) {
 
             int constant = 273;
-            int[] x1 = {73 + (i-1)*constant, i*constant, i*constant, 73 + (i-1)*constant};
+            int[] x1 = {73, constant, 315, 165};
             int[] y1 = {900,900,0,0};
             int a1 = 4;
             g2.fillPolygon(x1, y1, a1);
-        }
+
+        int[] x2 = {73 + constant, 2 * constant, 555, 395};
+        int[] y2 = {900,900,0,0};
+        int a2 = 4;
+        g2.fillPolygon(x2, y2, a2);
+
+
+        int[] x3 = {73 + 2*constant, 3 * constant, 795, 645};
+        int[] y3 = {900,900,0,0};
+        int a3 = 4;
+        g2.fillPolygon(x3, y3, a3);
+
+        int[] x4 = {73 + 3*constant, 4 * constant, 1035, 885};
+        int[] y4 = {900,900,0,0};
+        int a4 = 4;
+        g2.fillPolygon(x4, y4, a4);
+
+        int[] x5 = {73 + 4*constant, 5 * constant, 1265, 1115};
+        int[] y5 = {900,900,0,0};
+        int a5 = 4;
+        g2.fillPolygon(x5, y5, a5);
+
+
+//        }
 
 
         for (int i = 0; i < obstacles.size(); i++) {
