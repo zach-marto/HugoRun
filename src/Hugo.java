@@ -2,10 +2,12 @@ import java.awt.*;
 
 public class Hugo extends Sprite {
     private int lane;
+    private int upAndDown;
     boolean frame1 = true;
     public Hugo(int x, int y, int dir) {
         super(x, y, dir);
         setLane(3);
+        setUpAndDown(2);
         setPic("hugo frame 1.png", Sprite.NORTH);
     }
 
@@ -40,6 +42,12 @@ public class Hugo extends Sprite {
         return lane;
     }
 
+    public int getUpAndDown() {
+        return upAndDown;
+    }
+
+
+
     public void setLane(int lane) {
         if(lane < 1)
             lane = 1;
@@ -53,4 +61,21 @@ public class Hugo extends Sprite {
 
         setLoc(new Point(x, y));
     }
+
+
+    public void setUpAndDown(int upAndDown) {
+        if(upAndDown < 1)
+            upAndDown = 1;
+        if(upAndDown > 2)
+            upAndDown = 2;
+
+        this.upAndDown = upAndDown;
+
+        int x = (int)(getLoc().getX());
+        int y = 50+ (200*(upAndDown));
+
+        setLoc(new Point(x,y));
+    }
+
+
 }
