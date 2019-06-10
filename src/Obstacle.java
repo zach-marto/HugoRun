@@ -6,6 +6,7 @@ public class Obstacle extends Sprite {
     public Obstacle(int x, int y, int dir) {
         super(x, y, dir);
         setPic("rock.png", Sprite.NORTH);
+        isUpdating = false;
     }
 
     public void spawn(int lane){

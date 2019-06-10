@@ -12,6 +12,7 @@ public class Main extends JPanel {
     private Timer timer;
     private boolean[] keys;
     private ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
+    private double rockSpawnInterval;
 
     private Hugo hugo = new Hugo(0, 500, Sprite.NORTH);
  
@@ -19,21 +20,26 @@ public class Main extends JPanel {
 
         keys = new boolean[512]; //should be enough to hold any key code.
 
-        for (int i = 0; i < 6; i++) {
+        rockSpawnInterval = 0.015;
+
+        //creates all obstacles in an ArrayList
+        for (int i = 0; i < 100; i++) {
             obstacles.add(new Obstacle(-200, -200, Sprite.NORTH));
-            obstacles.get(i).spawn(i);
         }
 
+        //timer
         timer = new Timer(100, new ActionListener() {
-            @Override
+            @Override //code in here executes every tick
             public void actionPerformed(ActionEvent actionEvent) {
 
 
+                //checks if hugo intersects and obstacle
                 for (int i = 0; i < obstacles.size(); i++) {
                     if(hugo.intersects(obstacles.get(i)))
                         System.out.println("you dead stupid head");
                 }
 
+                //animates hugo
                 hugo.changeFrame();
 
                 repaint(); //always the last line.  after updating, refresh the graphics.
@@ -51,6 +57,7 @@ public class Main extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        //this whole section draws the background
         Color background = new Color(64,32,31);
         g2.setColor(background);
 
@@ -89,9 +96,32 @@ public class Main extends JPanel {
         g2.fillPolygon(x5, y5, a5);
 
 
-//        }
+        //spawns in obstacles in random lanes in random increments
+        if(Math.random() < rockSpawnInterval){
+            int index = (int)(Math.random()*obstacles.size());
+            if(!obstacles.get(index).getIsUpdating())
+                obstacles.get(index).spawn((int)(Math.random()*5)+1);
+        }
+        rockSpawnInterval += 0.0001; //slowly makes rocks spawn faster
 
+        //stops rocks from stacking
+        for (int i = 0; i < obstacles.size(); i++) {
+            int n = i;
+            for (int j = 0; j < n; j++) {
+                if(obstacles.get(i).intersects(obstacles.get(j))) {
+                    obstacles.get(j).setUpdating(false);
+                    obstacles.get(j).setLoc(new Point(-200, -200));
+                }
+            }
+            for (int j = n+1; j < obstacles.size(); j++) {
+                if(obstacles.get(i).intersects(obstacles.get(j))) {
+                    obstacles.get(j).setUpdating(false);
+                    obstacles.get(j).setLoc(new Point(-200, -200));
+                }
+            }
+        }
 
+        //updates/draws all obstacles
         for (int i = 0; i < obstacles.size(); i++) {
             obstacles.get(i).update();
             obstacles.get(i).draw(g2);
@@ -101,7 +131,8 @@ public class Main extends JPanel {
         hugo.draw(g2);
 
     }
- 
+
+    //does actions when keys are pressed
     public void moveHugo() {
         if (keys[KeyEvent.VK_W] || keys[KeyEvent.VK_UP]) {
             hugo.setUpAndDown(hugo.getUpAndDown()-1);
@@ -127,10 +158,8 @@ public class Main extends JPanel {
 
 
     }
- 
-    /*
-      You probably don't need to modify this keyListener code.
-       */
+
+    //detects when keys are pressed
     public void setKeyListener() {
         addKeyListener(new KeyListener() {
             @Override
@@ -151,7 +180,7 @@ public class Main extends JPanel {
             }
         });
     }
-    //sets ups the panel and frame.  Probably not much to modify here.
+    //sets ups the panel and frame
     public static void main(String[] args) {
         JFrame window = new JFrame("Hugo Run!");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
