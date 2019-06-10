@@ -14,6 +14,9 @@ public class Main extends JPanel {
     private ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
     private double rockSpawnInterval;
 
+    //coins
+    private ArrayList<Coin> coins = new ArrayList<Coin>();
+
     private Hugo hugo = new Hugo(0, 500, Sprite.NORTH);
  
     public Main() {
@@ -26,6 +29,9 @@ public class Main extends JPanel {
         for (int i = 0; i < 100; i++) {
             obstacles.add(new Obstacle(-200, -200, Sprite.NORTH));
         }
+
+        //coins
+        coins.add(new Coin(500, 500, Sprite.NORTH));
 
         //timer
         timer = new Timer(100, new ActionListener() {
@@ -102,7 +108,7 @@ public class Main extends JPanel {
             if(!obstacles.get(index).getIsUpdating())
                 obstacles.get(index).spawn((int)(Math.random()*5)+1);
         }
-        rockSpawnInterval += 0.0001; //slowly makes rocks spawn faster
+        rockSpawnInterval += 0.00001; //slowly makes rocks spawn faster
 
         //stops rocks from stacking
         for (int i = 0; i < obstacles.size(); i++) {
@@ -125,6 +131,12 @@ public class Main extends JPanel {
         for (int i = 0; i < obstacles.size(); i++) {
             obstacles.get(i).update();
             obstacles.get(i).draw(g2);
+        }
+
+        //draws coins
+        for (int i = 0; i < coins.size(); i++) {
+            coins.get(i).spin();
+            coins.get(i).draw(g2);
         }
 
 
