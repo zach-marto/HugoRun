@@ -31,7 +31,9 @@ public class Main extends JPanel {
         }
 
         //coins
-        coins.add(new Coin(500, 500, Sprite.NORTH));
+        for (int i = 0; i < 100; i++) {
+            coins.add(new Coin(-200, -200, Sprite.NORTH));
+        }
 
         //timer
         timer = new Timer(100, new ActionListener() {
@@ -41,8 +43,8 @@ public class Main extends JPanel {
 
                 //checks if hugo intersects and obstacle
                 for (int i = 0; i < obstacles.size(); i++) {
-                    if(hugo.intersects(obstacles.get(i)))
-                        System.out.println("you dead stupid head");
+//                    if(hugo.intersects(obstacles.get(i)))
+//                        System.out.println("you dead stupid head");
                 }
 
                 //animates hugo
@@ -133,9 +135,17 @@ public class Main extends JPanel {
             obstacles.get(i).draw(g2);
         }
 
+        //coins
+        if(Math.random() < 0.02){
+            int index = (int)(Math.random()*coins.size());
+            if(!coins.get(index).getIsUpdating())
+                coins.get(index).spawn((int)(Math.random()*5)+1);
+        }
+
         //draws coins
         for (int i = 0; i < coins.size(); i++) {
             coins.get(i).spin();
+            coins.get(i).update();
             coins.get(i).draw(g2);
         }
 

@@ -6,7 +6,7 @@ public class Coin extends Sprite {
 
     public Coin(int x, int y, int dir) {
         super(x, y, dir);
-        sprite = 1;
+        sprite = (int)(Math.random()*5)+1;
         setPic("coin1.png", Sprite.NORTH);
         isUpdating = false;
     }
@@ -30,7 +30,7 @@ public class Coin extends Sprite {
         if(isUpdating) {
             int y = (int) (getLoc().getY());
             int x = (int) (getLoc().getX());
-            y += 12;
+            y += 10;
 
             setLoc(new Point(x, y));
 
