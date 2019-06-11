@@ -13,17 +13,22 @@ public class Main extends JPanel {
     private boolean[] keys;
     private ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
     private double rockSpawnInterval;
+    private int score;
+    private boolean isPlaying;
 
     //coins
     private ArrayList<Coin> coins = new ArrayList<Coin>();
 
     private Hugo hugo = new Hugo(0, 500, Sprite.NORTH);
+    private Sprite jimingPic = new Sprite(800, 200, Sprite.NORTH);
  
     public Main() {
 
         keys = new boolean[512]; //should be enough to hold any key code.
-
+        score = 0;
         rockSpawnInterval = 0.015;
+        isPlaying = true;
+        jimingPic.setPic("jiming.png", Sprite.NORTH);
 
         //creates all obstacles in an ArrayList
         for (int i = 0; i < 100; i++) {
@@ -39,17 +44,19 @@ public class Main extends JPanel {
         timer = new Timer(100, new ActionListener() {
             @Override //code in here executes every tick
             public void actionPerformed(ActionEvent actionEvent) {
+                if(isPlaying) {
+                    score++;
 
+                    //checks if hugo intersects and obstacle
+                    for (int i = 0; i < obstacles.size(); i++) {
+                    if(hugo.intersects(obstacles.get(i)))
+                        gameOver();
+                    }
 
-                //checks if hugo intersects and obstacle
-                for (int i = 0; i < obstacles.size(); i++) {
-//                    if(hugo.intersects(obstacles.get(i)))
-//                        System.out.println("you dead stupid head");
+                    //animates hugo
+                    hugo.changeFrame();
+
                 }
-
-                //animates hugo
-                hugo.changeFrame();
-
                 repaint(); //always the last line.  after updating, refresh the graphics.
             }
         });
@@ -103,6 +110,11 @@ public class Main extends JPanel {
         int a5 = 4;
         g2.fillPolygon(x5, y5, a5);
 
+        //draws the score
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("ComicSansMS", Font.BOLD, 36));
+        g2.drawString("Score: " + score, 0, 50);
+
 
         //spawns in obstacles in random lanes in random increments
         if(Math.random() < rockSpawnInterval){
@@ -147,11 +159,32 @@ public class Main extends JPanel {
             coins.get(i).spin();
             coins.get(i).update();
             coins.get(i).draw(g2);
+            if(coins.get(i).intersects(hugo)){
+                coins.get(i).setUpdating(false);
+                coins.get(i).setLoc(new Point(-200, -200));
+                score += 50;
+            }
         }
-
 
         hugo.draw(g2);
 
+        if(!isPlaying){
+            g2.setColor(Color.BLACK);
+            g2.fillRect(0, 0, 1440, 900);
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("ComicSansMS", Font.BOLD, 100));
+            g2.drawString("Game Over!", 100, 300);
+            g2.setFont(new Font("ComicSansMS", Font.BOLD, 75));
+            g2.drawString("Your score: " + score, 100, 500);
+            jimingPic.draw(g2);
+
+        }
+
+    }
+
+    public void gameOver(){
+        isPlaying = false;
+        repaint();
     }
 
     //does actions when keys are pressed
@@ -176,7 +209,6 @@ public class Main extends JPanel {
             keys[KeyEvent.VK_D] = false;
             keys[KeyEvent.VK_RIGHT] = false;
         }
-
 
 
     }
