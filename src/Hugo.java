@@ -11,24 +11,6 @@ public class Hugo extends Sprite {
         setPic("hugo frame 1.png", Sprite.NORTH);
     }
 
-//    public void moveLeft(){
-//        if(lane <= 2) {
-//            setLoc(new Point((int) (getLoc().getX() - 447), (int) (getLoc().getY())));
-//            lane--;
-//        }
-//    }
-//
-//    public void moveRight(){
-//        if(lane >= 2) {
-//            setLoc(new Point((int) (getLoc().getX() + 447), (int) (getLoc().getY())));
-//            lane++;
-//        }
-//    }
-
-    //for later dog
-    public void moveUp(){
-        setLoc(new Point((int)(getLoc().getX()), (int)(getLoc().getY()+500)));
-    }
 
     public void changeFrame(){
         if(frame1)
@@ -56,7 +38,7 @@ public class Hugo extends Sprite {
 
         this.lane = lane;
 
-        int x = 273*(lane-1)+98;
+        int x = 273*(lane-1)+130;
         int y = (int)(getLoc().getY());
 
         setLoc(new Point(x, y));
@@ -75,6 +57,22 @@ public class Hugo extends Sprite {
         int y = 50+ (200*(upAndDown));
 
         setLoc(new Point(x,y));
+    }
+
+    public void moveUp(){
+        int x = (int)getLoc().getX();
+        int y = (int)getLoc().getY();
+        y -= 5;
+        setLoc(new Point(x, y));
+
+    }
+
+    public void moveDown(){
+        int x = (int)getLoc().getX();
+        int y = (int)getLoc().getY();
+        y += 5;
+        setLoc(new Point(x, y));
+
     }
 
 

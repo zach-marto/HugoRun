@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-//TODO: PUT YOUR NAME HERE
+//By Zachary Marto and Jiming Xu
  
 public class Main extends JPanel {
  
@@ -15,12 +15,17 @@ public class Main extends JPanel {
     private double rockSpawnInterval;
     private int score;
     private boolean isPlaying;
+    private boolean isInvincible;
+    private int invincibleCounter;
 
     //coins
     private ArrayList<Coin> coins = new ArrayList<Coin>();
+    private ArrayList<Star> stars = new ArrayList<Star>();
 
     private Hugo hugo = new Hugo(0, 500, Sprite.NORTH);
     private Sprite jimingPic = new Sprite(800, 200, Sprite.NORTH);
+
+    private Star counterStar = new Star(10, 50, Sprite.NORTH);
  
     public Main() {
 
@@ -29,10 +34,17 @@ public class Main extends JPanel {
         rockSpawnInterval = 0.015;
         isPlaying = true;
         jimingPic.setPic("jiming.png", Sprite.NORTH);
+        isInvincible = false;
+        invincibleCounter = 30;
 
         //creates all obstacles in an ArrayList
         for (int i = 0; i < 100; i++) {
             obstacles.add(new Obstacle(-200, -200, Sprite.NORTH));
+        }
+
+        //stars
+        for (int i = 0; i < 20; i++) {
+            stars.add(new Star(-200, -200, Sprite.NORTH));
         }
 
         //coins
@@ -47,10 +59,85 @@ public class Main extends JPanel {
                 if(isPlaying) {
                     score++;
 
-                    //checks if hugo intersects and obstacle
+                    //checks if hugo intersects and obstacle and sets obstacle speed
                     for (int i = 0; i < obstacles.size(); i++) {
-                    if(hugo.intersects(obstacles.get(i)))
-                        gameOver();
+                        obstacles.get(i).update();
+                        if(hugo.intersects(obstacles.get(i)))
+                            gameOver();
+                        int speed = score/500 + 10;
+                        obstacles.get(i).setSpeed(speed);
+                    }
+
+                    //spawns in obstacles in random lanes in random increments
+                    if(Math.random() < rockSpawnInterval){
+                        int index = (int)(Math.random()*obstacles.size());
+                        if(!obstacles.get(index).getIsUpdating())
+                            obstacles.get(index).spawn((int)(Math.random()*5)+1);
+                    }
+                    rockSpawnInterval += 0.00001; //slowly makes rocks spawn faster
+
+                    //stops rocks from stacking
+                    for (int i = 0; i < obstacles.size(); i++) {
+                        int n = i;
+                        for (int j = 0; j < n; j++) {
+                            if(obstacles.get(i).intersects(obstacles.get(j))) {
+                                obstacles.get(j).setUpdating(false);
+                                obstacles.get(j).setLoc(new Point(-200, -200));
+                            }
+                        }
+                        for (int j = n+1; j < obstacles.size(); j++) {
+                            if(obstacles.get(i).intersects(obstacles.get(j))) {
+                                obstacles.get(j).setUpdating(false);
+                                obstacles.get(j).setLoc(new Point(-200, -200));
+                            }
+                        }
+                    }
+
+                    //coins
+                    for (int i = 0; i < coins.size(); i++) {
+                        coins.get(i).spin();
+                        coins.get(i).update();
+                        if(isPlaying) {
+                            if (coins.get(i).intersects(hugo)) {
+                                coins.get(i).setUpdating(false);
+                                coins.get(i).setLoc(new Point(-200, -200));
+                                score += 50;
+                            }
+                        }
+                    }
+
+                    if(Math.random() < 0.02){
+                        int index = (int)(Math.random()*coins.size());
+                        if(!coins.get(index).getIsUpdating())
+                            coins.get(index).spawn((int)(Math.random()*5)+1);
+                    }
+
+                    //stars
+                    for (int i = 0; i < stars.size(); i++) {
+                        stars.get(i).spin();
+                        stars.get(i).update();
+                        if(isPlaying){
+                            if(stars.get(i).intersects(hugo)){
+                                stars.get(i).setUpdating(false);
+                                stars.get(i).setLoc(new Point(-200, -200));
+                                goInvincible();
+                            }
+                        }
+                    }
+
+                    if(Math.random() < 0.005){
+                        int index = (int)(Math.random()*stars.size());
+                        if(!stars.get(index).getIsUpdating())
+                            stars.get(index).spawn((int)(Math.random()*5)+1);
+                    }
+
+                    //invincible countdown
+                    if(isInvincible){
+                        invincibleCounter--;
+                        if(invincibleCounter < 1){
+                            isInvincible = false;
+                            invincibleCounter = 30;
+                        }
                     }
 
                     //animates hugo
@@ -113,61 +200,33 @@ public class Main extends JPanel {
         //draws the score
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("ComicSansMS", Font.BOLD, 36));
-        g2.drawString("Score: " + score, 0, 50);
+        g2.drawString("Score: " + score, 10, 50);
 
-
-        //spawns in obstacles in random lanes in random increments
-        if(Math.random() < rockSpawnInterval){
-            int index = (int)(Math.random()*obstacles.size());
-            if(!obstacles.get(index).getIsUpdating())
-                obstacles.get(index).spawn((int)(Math.random()*5)+1);
+        //draws invincibility counter
+        if(isInvincible) {
+            counterStar.draw(g2);
+            g2.drawString("" + invincibleCounter, 40, 115);
         }
-        rockSpawnInterval += 0.00001; //slowly makes rocks spawn faster
 
-        //stops rocks from stacking
-        for (int i = 0; i < obstacles.size(); i++) {
-            int n = i;
-            for (int j = 0; j < n; j++) {
-                if(obstacles.get(i).intersects(obstacles.get(j))) {
-                    obstacles.get(j).setUpdating(false);
-                    obstacles.get(j).setLoc(new Point(-200, -200));
-                }
-            }
-            for (int j = n+1; j < obstacles.size(); j++) {
-                if(obstacles.get(i).intersects(obstacles.get(j))) {
-                    obstacles.get(j).setUpdating(false);
-                    obstacles.get(j).setLoc(new Point(-200, -200));
-                }
-            }
-        }
 
         //updates/draws all obstacles
         for (int i = 0; i < obstacles.size(); i++) {
-            obstacles.get(i).update();
             obstacles.get(i).draw(g2);
         }
 
-        //coins
-        if(Math.random() < 0.02){
-            int index = (int)(Math.random()*coins.size());
-            if(!coins.get(index).getIsUpdating())
-                coins.get(index).spawn((int)(Math.random()*5)+1);
+        //stars
+        for (int i = 0; i < stars.size(); i++) {
+            stars.get(i).draw(g2);
         }
 
         //draws coins
         for (int i = 0; i < coins.size(); i++) {
-            coins.get(i).spin();
-            coins.get(i).update();
             coins.get(i).draw(g2);
-            if(coins.get(i).intersects(hugo)){
-                coins.get(i).setUpdating(false);
-                coins.get(i).setLoc(new Point(-200, -200));
-                score += 50;
-            }
         }
 
         hugo.draw(g2);
 
+        //end screen
         if(!isPlaying){
             g2.setColor(Color.BLACK);
             g2.fillRect(0, 0, 1440, 900);
@@ -183,14 +242,20 @@ public class Main extends JPanel {
     }
 
     public void gameOver(){
-        isPlaying = false;
-        repaint();
+        if(!isInvincible) {
+            isPlaying = false;
+            repaint();
+        }
+    }
+
+    public void goInvincible(){
+        isInvincible = true;
     }
 
     //does actions when keys are pressed
     public void moveHugo() {
         if (keys[KeyEvent.VK_W] || keys[KeyEvent.VK_UP]) {
-            hugo.setUpAndDown(hugo.getUpAndDown()-1);
+            hugo.moveUp();
             keys[KeyEvent.VK_W] = false;
             keys[KeyEvent.VK_UP] = false;
         }
@@ -200,7 +265,7 @@ public class Main extends JPanel {
             keys[KeyEvent.VK_LEFT] = false;
         }
         if (keys[KeyEvent.VK_S] || keys[KeyEvent.VK_DOWN]) {
-            hugo.setUpAndDown(hugo.getUpAndDown()+1);
+            hugo.moveDown();
             keys[KeyEvent.VK_S] = false;
             keys[KeyEvent.VK_DOWN] = false;
         }

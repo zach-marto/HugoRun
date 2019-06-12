@@ -2,6 +2,7 @@ import java.awt.*;
 
 public class Obstacle extends Sprite {
     private boolean isUpdating = false;
+    private int speed = 10;
 
     public Obstacle(int x, int y, int dir) {
         super(x, y, dir);
@@ -20,7 +21,7 @@ public class Obstacle extends Sprite {
         if(isUpdating) {
             int y = (int) (getLoc().getY());
             int x = (int) (getLoc().getX());
-            y += 10;
+            y += speed;
 
             setLoc(new Point(x, y));
 
@@ -35,5 +36,15 @@ public class Obstacle extends Sprite {
 
     public void setUpdating(boolean updating) {
         isUpdating = updating;
+    }
+
+    @Override
+    public int getSpeed() {
+        return speed;
+    }
+
+    @Override
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }
