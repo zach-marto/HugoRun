@@ -62,7 +62,8 @@ public class Hugo extends Sprite {
     public void moveUp(){
         int x = (int)getLoc().getX();
         int y = (int)getLoc().getY();
-        y -= 5;
+        if(y > 5)
+            y -= 5;
         setLoc(new Point(x, y));
 
     }
@@ -70,7 +71,8 @@ public class Hugo extends Sprite {
     public void moveDown(){
         int x = (int)getLoc().getX();
         int y = (int)getLoc().getY();
-        y += 5;
+        if(y < 800)
+            y += 5;
         setLoc(new Point(x, y));
 
     }
