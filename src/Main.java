@@ -1,6 +1,13 @@
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 //By Zachary Marto and Jiming Xu
@@ -17,6 +24,7 @@ public class Main extends JPanel {
     private boolean isPlaying;
     private boolean isInvincible;
     private int invincibleCounter;
+    private boolean playing;
 
     //coins
     private ArrayList<Coin> coins = new ArrayList<Coin>();
@@ -156,6 +164,29 @@ public class Main extends JPanel {
  
     //Our paint method.
     public void paintComponent(Graphics g) {
+
+        if(!playing) {
+            String file = "./HugoRun.wav";
+            InputStream in = null;
+            try {
+                in = new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            AudioStream audioStream = null;
+            try {
+                audioStream = new AudioStream(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            AudioPlayer.player.start(audioStream);
+
+            playing = true;
+        }
+
+
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
