@@ -166,7 +166,7 @@ public class Main extends JPanel {
     public void paintComponent(Graphics g) {
 
         if(!playing) {
-            String file = "./HugoRun.wav";
+            String file = "./res/HugoRun.wav";
             InputStream in = null;
             try {
                 in = new FileInputStream(file);
@@ -235,6 +235,7 @@ public class Main extends JPanel {
 
         //draws invincibility counter
         if(isInvincible) {
+            invincibleCounter = 30;
             counterStar.draw(g2);
             g2.drawString("" + invincibleCounter, 40, 115);
         }
